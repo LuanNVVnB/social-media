@@ -23,10 +23,18 @@ public class User implements UserDetails {
     @Id
     @GeneratedValue
     private Long id;
-    private String firstname;
-    private String lastname;
     private String email;
     private String password;
+//
+//    private List<User> followers; // Danh sách người theo dõi
+//    private List<User> following; // Danh sách người đang theo dõi
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    private List<Post> posts; // Danh sách bài viết
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    private List<Comment> comments; // Danh sách bình luận
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    private List<Like> likes; // Danh sách lượt thích
+
 
     @Enumerated(EnumType.STRING)
     private Role role;
