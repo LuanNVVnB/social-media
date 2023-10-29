@@ -1,5 +1,6 @@
 package com.example.cnd.dao.entity;
 
+import com.example.cnd.common.base.EntityBase;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -14,7 +15,7 @@ import java.util.Date;
 @AllArgsConstructor
 @Entity
 @Table(name = "_comment")
-public class Comment {
+public class Comment extends EntityBase {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

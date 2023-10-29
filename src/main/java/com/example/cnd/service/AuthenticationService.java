@@ -1,11 +1,14 @@
 package com.example.cnd.service;
 
 
+import com.example.cnd.common.enums.RoleEnum;
+import com.example.cnd.common.enums.TokenEnum;
 import com.example.cnd.config.JwtService;
 import com.example.cnd.dao.entity.Token;
-import com.example.cnd.dao.entity.TokenType;
 import com.example.cnd.dao.entity.User;
+import com.example.cnd.dao.entity.UserDetail;
 import com.example.cnd.dao.repository.TokenRepository;
+import com.example.cnd.dao.repository.UserDetailRepository;
 import com.example.cnd.dao.repository.UserRepository;
 import com.example.cnd.request.AuthenticationRequest;
 import com.example.cnd.request.RegisterRequest;
@@ -13,6 +16,7 @@ import com.example.cnd.response.AuthenticationResponse;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpHeaders;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -25,24 +29,39 @@ import java.io.IOException;
 @Service
 @RequiredArgsConstructor
 public class AuthenticationService {
-    private final UserRepository repository;
+    private final UserRepository userRepository;
     private final TokenRepository tokenRepository;
     private final PasswordEncoder passwordEncoder;
     private final JwtService jwtService;
     private final AuthenticationManager authenticationManager;
 
+    private final UserDetailRepository userDetailRepository;
+
+    @Transactional
     public AuthenticationResponse register(RegisterRequest request) {
         var user = User.builder()
-//                .firstname(request.getFirstname())
-//                .lastname(request.getLastname())
                 .email(request.getEmail())
                 .password(passwordEncoder.encode(request.getPassword()))
-                .role(request.getRole())
+                .roleEnum(RoleEnum.USER)
                 .build();
-        var savedUser = repository.save(user);
+        userRepository.save(user);
+
+        var userDetail = UserDetail.builder()
+                .user(user)
+                .fullName(request.getFirstname() + request.getLastname())
+                .birthDate(request.getBirthday())
+                .firstname(request.getFirstname())
+                .lastname(request.getLastname())
+                .gender(request.getGender())
+                .address(request.getAddress())
+                .build();
+
+        userDetailRepository.save(userDetail);
+
         var jwtToken = jwtService.generateToken(user);
         var refreshToken = jwtService.generateRefreshToken(user);
-        saveUserToken(savedUser, jwtToken);
+        saveUserToken(user, jwtToken);
+
         return AuthenticationResponse.builder()
                 .accessToken(jwtToken)
                 .refreshToken(refreshToken)
@@ -52,7 +71,7 @@ public class AuthenticationService {
     public AuthenticationResponse authenticate(AuthenticationRequest request) {
         authenticationManager.authenticate(
                 new UsernamePasswordAuthenticationToken(request.getEmail(), request.getPassword()));
-        var user = repository.findByEmail(request.getEmail())
+        var user = userRepository.findByEmail(request.getEmail())
                 .orElseThrow();
         var jwtToken = jwtService.generateToken(user);
         var refreshToken = jwtService.generateRefreshToken(user);
@@ -68,7 +87,7 @@ public class AuthenticationService {
         var token = Token.builder()
                 .user(user)
                 .token(jwtToken)
-                .tokenType(TokenType.BEARER)
+                .tokenEnum(TokenEnum.BEARER)
                 .expired(false)
                 .revoked(false)
                 .build();
@@ -95,7 +114,7 @@ public class AuthenticationService {
         refreshToken = authHeader.substring(7);
         userEmail = jwtService.extractUsername(refreshToken);
         if (userEmail != null) {
-            var user = this.repository.findByEmail(userEmail)
+            var user = this.userRepository.findByEmail(userEmail)
                     .orElseThrow();
             if (jwtService.isTokenValid(refreshToken, user)) {
                 var accessToken = jwtService.generateToken(user);

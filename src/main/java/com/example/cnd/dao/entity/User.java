@@ -1,5 +1,7 @@
 package com.example.cnd.dao.entity;
 
+import com.example.cnd.common.base.EntityBase;
+import com.example.cnd.common.enums.RoleEnum;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -18,16 +20,17 @@ import java.util.List;
 @AllArgsConstructor
 @Entity
 @Table(name = "_user")
-public class User implements UserDetails {
+public class User extends EntityBase implements UserDetails {
 
     @Id
     @GeneratedValue
     private Long id;
     private String email;
     private String password;
-//
-//    private List<User> followers; // Danh sách người theo dõi
-//    private List<User> following; // Danh sách người đang theo dõi
+
+    @OneToOne(mappedBy = "user", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    private UserDetail userDetail;
+
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     private List<Post> posts; // Danh sách bài viết
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
@@ -37,14 +40,14 @@ public class User implements UserDetails {
 
 
     @Enumerated(EnumType.STRING)
-    private Role role;
+    private RoleEnum roleEnum;
 
     @OneToMany(mappedBy = "user")
     private List<Token> tokens;
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
-        return List.of(new SimpleGrantedAuthority(role.name()));
+        return List.of(new SimpleGrantedAuthority(roleEnum.name()));
     }
 
     @Override

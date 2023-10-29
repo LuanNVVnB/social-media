@@ -1,9 +1,8 @@
-package com.example.cnd.dao.entity;
+package com.example.cnd.common.enums;
 
 import lombok.RequiredArgsConstructor;
 
 @RequiredArgsConstructor
-public enum Role {
+public enum RoleEnum {
     USER, ADMIN;
-
 }

@@ -1,5 +1,7 @@
 package com.example.cnd.dao.entity;
 
+import com.example.cnd.common.base.EntityBase;
+import com.example.cnd.common.enums.TokenEnum;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -11,7 +13,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 @Entity
-public class Token {
+public class Token extends EntityBase {
 
     @Id
     @GeneratedValue
@@ -21,7 +23,7 @@ public class Token {
     public String token;
 
     @Enumerated(EnumType.STRING)
-    public TokenType tokenType = TokenType.BEARER;
+    public TokenEnum tokenEnum = TokenEnum.BEARER;
 
     public boolean revoked;
 

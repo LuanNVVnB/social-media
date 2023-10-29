@@ -1,12 +1,14 @@
 package com.example.cnd.dao.entity;
 
+import com.example.cnd.common.base.EntityBase;
+import com.example.cnd.common.enums.GenderEnum;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import java.util.Date;
+import java.time.LocalDate;
 
 @Data
 @Builder
@@ -14,23 +16,23 @@ import java.util.Date;
 @AllArgsConstructor
 @Entity
 @Table(name = "_user_detail")
-public class UserDetail {
-
-    @Id
-    @GeneratedValue
-    private Long id;
+public class UserDetail extends EntityBase {
+    @OneToOne
+    @JoinColumn(name = "user_id")
+    private User user;
 
     private String firstname;
     private String lastname;
     @Column(name = "full_name")
     private String fullName;
+
+    private GenderEnum gender;
     private String bio;
 
     @Column(name = "profile_image")
     private String profileImage; // URL hình ảnh hồ sơ
     @Column(name = "birth_date")
-    private Date birthDate;
-    private String location;
-    @Column(name = "registration_date")
-    private Date registrationDate; // Ngày đăng ký tài khoản
+    private LocalDate birthDate;
+    private String address;
+
 }
