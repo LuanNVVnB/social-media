@@ -52,7 +52,6 @@ public class AuthenticationService {
                 .birthDate(request.getBirthday())
                 .firstname(request.getFirstname())
                 .lastname(request.getLastname())
-                .gender(request.getGender())
                 .address(request.getAddress())
                 .build();
 

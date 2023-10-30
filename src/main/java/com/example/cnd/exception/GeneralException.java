@@ -1,16 +1,22 @@
 package com.example.cnd.exception;
 
+import com.example.cnd.common.base.ErrorResponse;
 import lombok.Data;
-import org.springframework.web.bind.annotation.ControllerAdvice;
+import lombok.EqualsAndHashCode;
+import org.springframework.http.HttpStatus;
 
 @Data
-@ControllerAdvice
-public class GeneralException extends RuntimeException {
-    private Integer code;
-    private String message;
+@EqualsAndHashCode(callSuper = true)
+public abstract class GeneralException extends RuntimeException {
+    private HttpStatus httpStatus;
+    private ErrorResponse error;
 
-    public GeneralException(String message) {
-        super(message);
+    public GeneralException() {
+        super();
     }
 
+    public GeneralException(ErrorResponse error) {
+        super(error.getMessage());
+        this.error = error;
+    }
 }

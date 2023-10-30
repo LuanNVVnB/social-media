@@ -1,6 +1,5 @@
 package com.example.cnd.request;
 
-import com.example.cnd.common.enums.GenderEnum;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
@@ -29,8 +28,6 @@ public class RegisterRequest {
     private String password;
     @NotBlank
     private String address;
-    @NotBlank
-    private GenderEnum gender;
     @NotNull
     private LocalDate birthday;
 }

@@ -17,6 +17,9 @@ import java.time.LocalDate;
 @Entity
 @Table(name = "_user_detail")
 public class UserDetail extends EntityBase {
+    @Id
+    @GeneratedValue
+    private Long id;
     @OneToOne
     @JoinColumn(name = "user_id")
     private User user;

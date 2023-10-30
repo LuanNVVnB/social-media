@@ -7,14 +7,13 @@ import org.springframework.http.HttpStatus;
 
 @Data
 @EqualsAndHashCode(callSuper = true)
-public class UnprocessableEntityException extends GeneralException {
-    public UnprocessableEntityException(ErrorResponse err) {
-        super(err);
+public class BadRequestException extends GeneralException {
+    public BadRequestException(ErrorResponse error) {
+        super(error);
     }
 
     @Override
     public HttpStatus getHttpStatus() {
-        return HttpStatus.UNPROCESSABLE_ENTITY;
+        return HttpStatus.BAD_REQUEST;
     }
-
 }
