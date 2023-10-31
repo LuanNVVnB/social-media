@@ -15,7 +15,7 @@ import java.time.LocalDate;
 @NoArgsConstructor
 @AllArgsConstructor
 @Entity
-@Table(name = "_user_detail")
+@Table(name = "m_user_detail")
 public class UserDetail extends EntityBase {
     @Id
     @GeneratedValue

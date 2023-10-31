@@ -14,7 +14,7 @@ import java.util.Date;
 @NoArgsConstructor
 @AllArgsConstructor
 @Entity
-@Table(name = "_like")
+@Table(name = "m_like")
 public class Like extends EntityBase {
 
     @Id

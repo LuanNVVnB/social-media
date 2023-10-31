@@ -1,6 +1,5 @@
 package com.example.cnd.service;
 
-
 import com.example.cnd.common.enums.RoleEnum;
 import com.example.cnd.common.enums.TokenEnum;
 import com.example.cnd.config.JwtService;
@@ -10,6 +9,7 @@ import com.example.cnd.dao.entity.UserDetail;
 import com.example.cnd.dao.repository.TokenRepository;
 import com.example.cnd.dao.repository.UserDetailRepository;
 import com.example.cnd.dao.repository.UserRepository;
+import com.example.cnd.exception.ServerErrorException;
 import com.example.cnd.request.AuthenticationRequest;
 import com.example.cnd.request.RegisterRequest;
 import com.example.cnd.response.AuthenticationResponse;
@@ -18,6 +18,7 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.log4j.Log4j2;
 import org.springframework.http.HttpHeaders;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -25,9 +26,11 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.io.IOException;
+import java.rmi.ServerError;
 
 @Service
 @RequiredArgsConstructor
+@Log4j2
 public class AuthenticationService {
     private final UserRepository userRepository;
     private final TokenRepository tokenRepository;
@@ -39,32 +42,37 @@ public class AuthenticationService {
 
     @Transactional
     public AuthenticationResponse register(RegisterRequest request) {
-        var user = User.builder()
-                .email(request.getEmail())
-                .password(passwordEncoder.encode(request.getPassword()))
-                .roleEnum(RoleEnum.USER)
-                .build();
-        userRepository.save(user);
+        try {
+            var user = User.builder()
+                    .email(request.getEmail())
+                    .password(passwordEncoder.encode(request.getPassword()))
+                    .roleEnum(RoleEnum.USER)
+                    .build();
+            userRepository.save(user);
 
-        var userDetail = UserDetail.builder()
-                .user(user)
-                .fullName(request.getFirstname() + request.getLastname())
-                .birthDate(request.getBirthday())
-                .firstname(request.getFirstname())
-                .lastname(request.getLastname())
-                .address(request.getAddress())
-                .build();
+            var userDetail = UserDetail.builder()
+                    .user(user)
+                    .fullName(request.getFirstname() + request.getLastname())
+                    .birthDate(request.getBirthday())
+                    .firstname(request.getFirstname())
+                    .lastname(request.getLastname())
+                    .address(request.getAddress())
+                    .build();
 
-        userDetailRepository.save(userDetail);
+            userDetailRepository.save(userDetail);
 
-        var jwtToken = jwtService.generateToken(user);
-        var refreshToken = jwtService.generateRefreshToken(user);
-        saveUserToken(user, jwtToken);
+            var jwtToken = jwtService.generateToken(user);
+            var refreshToken = jwtService.generateRefreshToken(user);
+            saveUserToken(user, jwtToken);
 
-        return AuthenticationResponse.builder()
-                .accessToken(jwtToken)
-                .refreshToken(refreshToken)
-                .build();
+            return AuthenticationResponse.builder()
+                    .accessToken(jwtToken)
+                    .refreshToken(refreshToken)
+                    .build();
+        } catch (Exception e) {
+            log.error(e);
+            throw new ServerErrorException();
+        }
     }
 
     public AuthenticationResponse authenticate(AuthenticationRequest request) {

@@ -14,7 +14,7 @@ import java.util.Date;
 @NoArgsConstructor
 @AllArgsConstructor
 @Entity
-@Table(name = "_comment")
+@Table(name = "m_comment")
 public class Comment extends EntityBase {
 
     @Id

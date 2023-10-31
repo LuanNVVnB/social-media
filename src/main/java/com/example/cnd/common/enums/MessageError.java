@@ -5,8 +5,13 @@ import lombok.Getter;
 
 @Getter
 public enum MessageError {
-    E_500(500, "Server Error"),
-    E_422(422, "Format request error");
+
+    E_400(400, "Bad request"),
+    E_401(401, "Unauthorized"),
+    E_403(403, "Forbidden"),
+    E_404(404, "Not Found"),
+    E_422(422, "Format request error"),
+    E_500(500, "Server Error");
 
     private int messageId;
     private String messageContent;

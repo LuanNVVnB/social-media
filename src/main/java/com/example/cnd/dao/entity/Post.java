@@ -15,7 +15,7 @@ import java.util.List;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-@Table(name = "_post")
+@Table(name = "m_post")
 public class Post extends EntityBase {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
