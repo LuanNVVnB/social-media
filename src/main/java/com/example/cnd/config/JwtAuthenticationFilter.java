@@ -17,6 +17,12 @@ import org.springframework.web.filter.OncePerRequestFilter;
 
 import java.io.IOException;
 
+/**
+ * File: com.example.cnd.config
+ * Description:  <div style="font-weight: bold; color: #0073e6;"> JwtAuthenticationFilter </div><hr>
+ * Author:  <span style="font-weight: bold; color: #00a65a;"></span>
+ * Date: <span style="font-weight: bold; color: #ff5722;">11/3/2023</span>
+ **/
 @Component
 @RequiredArgsConstructor
 public class JwtAuthenticationFilter extends OncePerRequestFilter {

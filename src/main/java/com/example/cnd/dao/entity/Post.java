@@ -10,6 +10,12 @@ import lombok.NoArgsConstructor;
 import java.util.Date;
 import java.util.List;
 
+/**
+ * File: com.example.cnd.dao.entity
+ * Description:  <div style="font-weight: bold; color: #0073e6;"> Post </div><hr>
+ * Author:  <span style="font-weight: bold; color: #00a65a;"></span>
+ * Date: <span style="font-weight: bold; color: #ff5722;">11/3/2023</span>
+ **/
 @Entity
 @Data
 @Builder

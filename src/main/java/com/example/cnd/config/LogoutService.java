@@ -9,6 +9,12 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.web.authentication.logout.LogoutHandler;
 import org.springframework.stereotype.Service;
 
+/**
+ * File: com.example.cnd.config
+ * Description:  <div style="font-weight: bold; color: #0073e6;"> LogoutService </div><hr>
+ * Author:  <span style="font-weight: bold; color: #00a65a;"></span>
+ * Date: <span style="font-weight: bold; color: #ff5722;">11/3/2023</span>
+ **/
 @Service
 @RequiredArgsConstructor
 public class LogoutService implements LogoutHandler {

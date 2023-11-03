@@ -6,6 +6,12 @@ import lombok.Setter;
 
 import java.time.LocalDateTime;
 
+/**
+ * File: com.example.cnd.common.base
+ * Description:  <div style="font-weight: bold; color: #0073e6;"> EntityBase </div><hr>
+ * Author:  <span style="font-weight: bold; color: #00a65a;"></span>
+ * Date: <span style="font-weight: bold; color: #ff5722;">11/3/2023</span>
+ **/
 @Getter
 @Setter
 public class EntityBase {

@@ -1,5 +1,6 @@
-package com.example.cnd.service;
+package com.example.cnd.service.impl;
 
+import com.example.cnd.common.enums.MessageError;
 import com.example.cnd.common.enums.RoleEnum;
 import com.example.cnd.common.enums.TokenEnum;
 import com.example.cnd.config.JwtService;
@@ -9,10 +10,12 @@ import com.example.cnd.dao.entity.UserDetail;
 import com.example.cnd.dao.repository.TokenRepository;
 import com.example.cnd.dao.repository.UserDetailRepository;
 import com.example.cnd.dao.repository.UserRepository;
+import com.example.cnd.exception.BadRequestException;
 import com.example.cnd.exception.ServerErrorException;
 import com.example.cnd.request.AuthenticationRequest;
 import com.example.cnd.request.RegisterRequest;
 import com.example.cnd.response.AuthenticationResponse;
+import com.example.cnd.service.AuthenticationServices;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
@@ -26,12 +29,11 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.io.IOException;
-import java.rmi.ServerError;
 
 @Service
 @RequiredArgsConstructor
 @Log4j2
-public class AuthenticationService {
+public class AuthenticationServiceImpl implements AuthenticationServices {
     private final UserRepository userRepository;
     private final TokenRepository tokenRepository;
     private final PasswordEncoder passwordEncoder;
@@ -40,9 +42,13 @@ public class AuthenticationService {
 
     private final UserDetailRepository userDetailRepository;
 
+    @Override
     @Transactional
     public AuthenticationResponse register(RegisterRequest request) {
         try {
+            userDetailRepository.findByUserNameOrEmail(request.getUserName ()).orElseThrow(()->new BadRequestException(
+                    MessageError.findErrorById(MessageError.E_400)));
+
             var user = User.builder()
                     .email(request.getEmail())
                     .password(passwordEncoder.encode(request.getPassword()))
@@ -52,10 +58,9 @@ public class AuthenticationService {
 
             var userDetail = UserDetail.builder()
                     .user(user)
-                    .fullName(request.getFirstname() + request.getLastname())
                     .birthDate(request.getBirthday())
-                    .firstname(request.getFirstname())
-                    .lastname(request.getLastname())
+                    .firstname(request.getFirstName())
+                    .lastname(request.getLastName())
                     .address(request.getAddress())
                     .build();
 
@@ -75,7 +80,8 @@ public class AuthenticationService {
         }
     }
 
-    public AuthenticationResponse authenticate(AuthenticationRequest request) {
+    @Override
+    public AuthenticationResponse login(AuthenticationRequest request) {
         authenticationManager.authenticate(
                 new UsernamePasswordAuthenticationToken(request.getEmail(), request.getPassword()));
         var user = userRepository.findByEmail(request.getEmail())
@@ -101,6 +107,7 @@ public class AuthenticationService {
         tokenRepository.save(token);
     }
 
+
     private void revokeAllUserTokens(User user) {
         var validUserTokens = tokenRepository.findAllValidTokenByUser(user.getId());
         if (validUserTokens.isEmpty()) return;
@@ -111,6 +118,7 @@ public class AuthenticationService {
         tokenRepository.saveAll(validUserTokens);
     }
 
+    @Override
     public void refreshToken(HttpServletRequest request, HttpServletResponse response) throws IOException {
         final String authHeader = request.getHeader(HttpHeaders.AUTHORIZATION);
         final String refreshToken;
