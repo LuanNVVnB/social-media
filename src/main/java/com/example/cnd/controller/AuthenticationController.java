@@ -26,7 +26,7 @@ import java.io.IOException;
  * Date: <span style="font-weight: bold; color: #ff5722;">11/3/2023</span>
  **/
 @RestController
-@RequestMapping("/api/v1/auth")
+@RequestMapping("/auth")
 @RequiredArgsConstructor
 public class AuthenticationController {
 
@@ -50,16 +50,19 @@ public class AuthenticationController {
      * Controller login user and authentication
      */
     @PostMapping("/login")
-    public ResponseEntity<AuthenticationResponse> login(@Valid @RequestBody AuthenticationRequest request,
+    public ResponseEntity<SuccessResponse> login(@Valid @RequestBody AuthenticationRequest request,
             BindingResult br) {
         bindingRequest.processValidateBindingResult(br);
-        return ResponseEntity.ok(authenticationService.login(request));
+        AuthenticationResponse response = authenticationService.login(request);
+        return ResponseEntity.ok(new SuccessResponse(response));
     }
 
+    /**
+     * Controller refresh token
+     */
     @PostMapping("/refresh-token")
     public void refreshToken(HttpServletRequest request, HttpServletResponse response) throws IOException {
         authenticationService.refreshToken(request, response);
     }
-
 
 }

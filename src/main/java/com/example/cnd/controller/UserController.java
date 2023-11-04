@@ -1,7 +1,17 @@
 package com.example.cnd.controller;
 
+import com.example.cnd.common.base.SuccessResponse;
+import com.example.cnd.request.ProfileRequest;
+import com.example.cnd.request.RegisterRequest;
+import com.example.cnd.response.AuthenticationResponse;
+import com.example.cnd.service.UserServices;
+import com.example.cnd.validator.BindingRequest;
+import jakarta.validation.Valid;
+import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.validation.BindingResult;
+import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -13,11 +23,20 @@ import org.springframework.web.bind.annotation.RestController;
  **/
 @RestController
 @RequestMapping("/user")
+@RequiredArgsConstructor
 public class UserController {
+    private final UserServices userService;
+    private final BindingRequest bindingRequest;
 
-    @GetMapping("/hello")
-    public ResponseEntity<Object> getHello() {
-        return ResponseEntity.status(200)
-                .body("hello");
+    /**
+     * Controller update information user or profile
+     */
+    @PutMapping("/profile")
+    public ResponseEntity<SuccessResponse> updateProfile(@Valid @RequestBody ProfileRequest request,
+            BindingResult br) {
+        bindingRequest.processValidateBindingResult(br);
+        AuthenticationResponse response = userService.updateProfile(request);
+
+        return ResponseEntity.ok(new SuccessResponse(response));
     }
 }

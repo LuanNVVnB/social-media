@@ -1,8 +1,7 @@
 package com.example.cnd.common.base;
 
 import jakarta.persistence.*;
-import lombok.Getter;
-import lombok.Setter;
+import lombok.Data;
 
 import java.time.LocalDateTime;
 
@@ -12,8 +11,8 @@ import java.time.LocalDateTime;
  * Author:  <span style="font-weight: bold; color: #00a65a;"></span>
  * Date: <span style="font-weight: bold; color: #ff5722;">11/3/2023</span>
  **/
-@Getter
-@Setter
+@Data
+@MappedSuperclass
 public class EntityBase {
 
     @Temporal(TemporalType.TIMESTAMP)

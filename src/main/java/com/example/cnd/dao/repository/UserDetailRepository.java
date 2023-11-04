@@ -19,5 +19,5 @@ public interface UserDetailRepository extends JpaRepository<UserDetail, Long> {
 
     @Query(value = "Select ud.id From UserDetail ud JOIN User u ON u.id = ud.user.id " +
             "Where ud.userName = :userName or u.email = :userName")
-    Optional<Long> findByUserNameOrEmail(@Param("userName") String userName);
+    Optional<Long> existsByUserNameOrEmail(@Param("userName") String userName);
 }

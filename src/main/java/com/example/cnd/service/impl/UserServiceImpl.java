@@ -1,5 +1,7 @@
 package com.example.cnd.service.impl;
 
+import com.example.cnd.request.ProfileRequest;
+import com.example.cnd.response.AuthenticationResponse;
 import com.example.cnd.service.UserServices;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
@@ -16,4 +18,8 @@ import org.springframework.stereotype.Service;
 @Log4j2
 
 public class UserServiceImpl implements UserServices {
+    @Override
+    public AuthenticationResponse updateProfile(ProfileRequest request) {
+        return null;
+    }
 }

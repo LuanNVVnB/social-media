@@ -35,9 +35,10 @@ public class User extends EntityBase implements UserDetails {
     @Column(name = "email", nullable = false, unique = true)
     private String email;
 
+    @Column(name = "password", nullable = false, unique = true)
     private String password;
-
-    private String salt;
+//    @Column(name = "salt", nullable = false, unique = true)
+//    private String salt;
 
     @OneToOne(mappedBy = "user", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     private UserDetail userDetail;

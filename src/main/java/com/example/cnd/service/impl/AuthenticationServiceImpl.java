@@ -11,7 +11,6 @@ import com.example.cnd.dao.repository.TokenRepository;
 import com.example.cnd.dao.repository.UserDetailRepository;
 import com.example.cnd.dao.repository.UserRepository;
 import com.example.cnd.exception.BadRequestException;
-import com.example.cnd.exception.ServerErrorException;
 import com.example.cnd.request.AuthenticationRequest;
 import com.example.cnd.request.RegisterRequest;
 import com.example.cnd.response.AuthenticationResponse;
@@ -29,6 +28,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.io.IOException;
+import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
@@ -45,39 +45,37 @@ public class AuthenticationServiceImpl implements AuthenticationServices {
     @Override
     @Transactional
     public AuthenticationResponse register(RegisterRequest request) {
-        try {
-            userDetailRepository.findByUserNameOrEmail(request.getUserName ()).orElseThrow(()->new BadRequestException(
-                    MessageError.findErrorById(MessageError.E_400)));
-
-            var user = User.builder()
-                    .email(request.getEmail())
-                    .password(passwordEncoder.encode(request.getPassword()))
-                    .roleEnum(RoleEnum.USER)
-                    .build();
-            userRepository.save(user);
-
-            var userDetail = UserDetail.builder()
-                    .user(user)
-                    .birthDate(request.getBirthday())
-                    .firstname(request.getFirstName())
-                    .lastname(request.getLastName())
-                    .address(request.getAddress())
-                    .build();
-
-            userDetailRepository.save(userDetail);
-
-            var jwtToken = jwtService.generateToken(user);
-            var refreshToken = jwtService.generateRefreshToken(user);
-            saveUserToken(user, jwtToken);
-
-            return AuthenticationResponse.builder()
-                    .accessToken(jwtToken)
-                    .refreshToken(refreshToken)
-                    .build();
-        } catch (Exception e) {
-            log.error(e);
-            throw new ServerErrorException();
+        Optional<Long> isExist = userDetailRepository.existsByUserNameOrEmail(request.getUserName());
+        if (isExist.isPresent()) {
+            throw new BadRequestException(MessageError.findErrorById(MessageError.E_400));
         }
+
+        var user = User.builder()
+                .email(request.getEmail())
+                .password(passwordEncoder.encode(request.getPassword()))
+                .roleEnum(RoleEnum.USER)
+                .build();
+        userRepository.save(user);
+
+        var userDetail = UserDetail.builder()
+                .user(user)
+                .birthDate(request.getBirthday())
+                .firstname(request.getFirstName())
+                .lastname(request.getLastName())
+                .userName(request.getUserName())
+                .address(request.getAddress())
+                .build();
+
+        userDetailRepository.save(userDetail);
+
+        var jwtToken = jwtService.generateToken(user);
+        var refreshToken = jwtService.generateRefreshToken(user);
+        saveUserToken(user, jwtToken);
+
+        return AuthenticationResponse.builder()
+                .accessToken(jwtToken)
+                .refreshToken(refreshToken)
+                .build();
     }
 
     @Override
