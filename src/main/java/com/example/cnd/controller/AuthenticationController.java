@@ -26,7 +26,7 @@ import java.io.IOException;
  * Date: <span style="font-weight: bold; color: #ff5722;">11/3/2023</span>
  **/
 @RestController
-@RequestMapping("/auth")
+@RequestMapping("/api/v1/auth")
 @RequiredArgsConstructor
 public class AuthenticationController {
 

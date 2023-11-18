@@ -1,5 +1,7 @@
 package com.example.cnd.request;
 
+import com.example.cnd.common.enums.GenderEnum;
+import com.example.cnd.validator.EnumKeys;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
@@ -42,6 +44,10 @@ public class RegisterRequest {
     private String password;
     @NotBlank
     private String address;
+
+    @NotNull
+    @EnumKeys(value = GenderEnum.class, methodName = "contains")
+    private Integer gender;
     @NotNull
     private LocalDate birthday;
 }

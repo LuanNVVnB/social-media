@@ -1,7 +1,6 @@
 package com.example.cnd.dao.entity;
 
 import com.example.cnd.common.base.EntityBase;
-import com.example.cnd.common.enums.GenderEnum;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -35,7 +34,7 @@ public class UserDetail extends EntityBase {
     @Column(name = "user_name", nullable = false, unique = true)
     private String userName;
 
-    private GenderEnum gender;
+    private Integer gender;
     private String bio;
 
     @Column(name = "profile_image")

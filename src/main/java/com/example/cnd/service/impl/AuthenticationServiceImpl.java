@@ -64,6 +64,7 @@ public class AuthenticationServiceImpl implements AuthenticationServices {
                 .lastname(request.getLastName())
                 .userName(request.getUserName())
                 .address(request.getAddress())
+                .gender(request.getGender())
                 .build();
 
         userDetailRepository.save(userDetail);
