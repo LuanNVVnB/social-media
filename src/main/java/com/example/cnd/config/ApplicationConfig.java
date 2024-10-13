@@ -1,6 +1,8 @@
 package com.example.cnd.config;
 
+import com.example.cnd.common.enums.MessageError;
 import com.example.cnd.dao.repository.UserRepository;
+import com.example.cnd.exception.UnauthorizedException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -41,8 +43,12 @@ public class ApplicationConfig {
 
 
     @Bean
-    public AuthenticationManager authenticationManager(AuthenticationConfiguration config) throws Exception {
-        return config.getAuthenticationManager();
+    public AuthenticationManager authenticationManager(AuthenticationConfiguration config) {
+        try {
+            return config.getAuthenticationManager();
+        } catch (Exception e) {
+            throw new UnauthorizedException(MessageError.findErrorById(MessageError.E_401));
+        }
     }
 
     @Bean

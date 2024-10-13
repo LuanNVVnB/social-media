@@ -1,5 +1,6 @@
 package com.example.cnd.config;
 
+import com.example.cnd.common.enums.RoleEnum;
 import com.example.cnd.constant.ApConstant;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
@@ -29,7 +30,7 @@ import static org.springframework.security.config.http.SessionCreationPolicy.STA
 @EnableMethodSecurity
 public class SecurityConfiguration {
 
-    private static final String[] WHITE_LIST_URL = {"/api/v1/auth/**"};
+    private static final String[] WHITE_LIST_URL = {ApConstant.EndPoint.AUTH_URL};
     private final JwtAuthenticationFilter jwtAuthFilter;
     private final AuthenticationProvider authenticationProvider;
     private final LogoutHandler logoutHandler;
@@ -43,8 +44,8 @@ public class SecurityConfiguration {
                                 .permitAll()
                                 .requestMatchers(GET, ApConstant.EndPoint.HELLO_DB)
                                 .permitAll()
-                                .requestMatchers(GET, "/api/v1/user/**")
-                                .hasAnyAuthority("ADMIN")
+                                .requestMatchers(GET, ApConstant.EndPoint.USER_URL)
+                                .hasAnyAuthority(RoleEnum.ADMIN.name())
                                 .anyRequest()
                                 .authenticated()
                 )
@@ -52,12 +53,11 @@ public class SecurityConfiguration {
                 .authenticationProvider(authenticationProvider)
                 .addFilterBefore(jwtAuthFilter, UsernamePasswordAuthenticationFilter.class)
                 .logout(logout ->
-                        logout.logoutUrl("/api/v1/auth/logout")
+                        logout.logoutUrl(ApConstant.EndPoint.AUTH_LOGOUT)
                                 .addLogoutHandler(logoutHandler)
                                 .logoutSuccessHandler(
                                         (request, response, authentication) -> SecurityContextHolder.clearContext())
-                )
-        ;
+                );
 
         return http.build();
     }

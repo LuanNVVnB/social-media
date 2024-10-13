@@ -38,10 +38,10 @@ public class CommonExceptionHandler extends ResponseEntityExceptionHandler {
     }
 
     /**
-     * UnprocessableEntityException処理
+     * Unprocessable EntityException
      *
      * @param ex UnprocessableEntityException
-     * @return HTTPレスポンスが「UNPROCESSABLE_CONTENT」のErrorResponse
+     * @return HTTP「UNPROCESSABLE_CONTENT」ErrorResponse
      */
     @ExceptionHandler(UnprocessableEntityException.class)
     public ResponseEntity<Object> handleUnprocessableEntityException(UnprocessableEntityException ex) {

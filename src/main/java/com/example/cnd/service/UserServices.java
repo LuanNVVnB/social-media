@@ -1,7 +1,11 @@
 package com.example.cnd.service;
 
 import com.example.cnd.request.ProfileRequest;
+import com.example.cnd.request.UsersRequest;
 import com.example.cnd.response.AuthenticationResponse;
+import com.example.cnd.response.UsersResponse;
+
+import java.util.List;
 
 /**
  * File: com.example.cnd.service
@@ -11,4 +15,6 @@ import com.example.cnd.response.AuthenticationResponse;
  **/
 public interface UserServices {
     AuthenticationResponse updateProfile(ProfileRequest request);
+
+    List<UsersResponse> getUsers(UsersRequest request);
 }

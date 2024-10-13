@@ -1,19 +1,20 @@
 package com.example.cnd.controller;
 
 import com.example.cnd.common.base.SuccessResponse;
+import com.example.cnd.constant.ApConstant;
 import com.example.cnd.request.ProfileRequest;
-import com.example.cnd.request.RegisterRequest;
+import com.example.cnd.request.UsersRequest;
 import com.example.cnd.response.AuthenticationResponse;
+import com.example.cnd.response.UsersResponse;
 import com.example.cnd.service.UserServices;
 import com.example.cnd.validator.BindingRequest;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.BindingResult;
-import org.springframework.web.bind.annotation.PutMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 /**
  * File: com.example.cnd.controller
@@ -22,11 +23,22 @@ import org.springframework.web.bind.annotation.RestController;
  * Date: <span style="font-weight: bold; color: #ff5722;">11/3/2023</span>
  **/
 @RestController
-@RequestMapping("/user")
+@RequestMapping(ApConstant.BASE_API.USER)
 @RequiredArgsConstructor
 public class UserController {
     private final UserServices userService;
     private final BindingRequest bindingRequest;
+
+    /**
+     * Controller update information user or profile
+     */
+    @GetMapping("")
+    public ResponseEntity<SuccessResponse> getUsers() {
+
+        List<UsersResponse> response = userService.getUsers(new UsersRequest());
+
+        return ResponseEntity.ok(new SuccessResponse(response));
+    }
 
     /**
      * Controller update information user or profile

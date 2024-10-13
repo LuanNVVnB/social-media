@@ -1,6 +1,7 @@
 package com.example.cnd.controller;
 
 import com.example.cnd.common.base.SuccessResponse;
+import com.example.cnd.constant.ApConstant;
 import com.example.cnd.request.AuthenticationRequest;
 import com.example.cnd.request.RegisterRequest;
 import com.example.cnd.response.AuthenticationResponse;
@@ -26,7 +27,7 @@ import java.io.IOException;
  * Date: <span style="font-weight: bold; color: #ff5722;">11/3/2023</span>
  **/
 @RestController
-@RequestMapping("/api/v1/auth")
+@RequestMapping(ApConstant.BASE_API.AUTH)
 @RequiredArgsConstructor
 public class AuthenticationController {
 

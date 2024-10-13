@@ -11,6 +11,7 @@ import com.example.cnd.dao.repository.TokenRepository;
 import com.example.cnd.dao.repository.UserDetailRepository;
 import com.example.cnd.dao.repository.UserRepository;
 import com.example.cnd.exception.BadRequestException;
+import com.example.cnd.exception.UnauthorizedException;
 import com.example.cnd.request.AuthenticationRequest;
 import com.example.cnd.request.RegisterRequest;
 import com.example.cnd.response.AuthenticationResponse;
@@ -45,7 +46,7 @@ public class AuthenticationServiceImpl implements AuthenticationServices {
     @Override
     @Transactional
     public AuthenticationResponse register(RegisterRequest request) {
-        Optional<Long> isExist = userDetailRepository.existsByUserNameOrEmail(request.getUserName());
+        Optional<Long> isExist = userDetailRepository.existsByUserNameOrEmail(request.getEmail());
         if (isExist.isPresent()) {
             throw new BadRequestException(MessageError.findErrorById(MessageError.E_400));
         }
@@ -81,10 +82,17 @@ public class AuthenticationServiceImpl implements AuthenticationServices {
 
     @Override
     public AuthenticationResponse login(AuthenticationRequest request) {
-        authenticationManager.authenticate(
-                new UsernamePasswordAuthenticationToken(request.getEmail(), request.getPassword()));
+        try {
+            authenticationManager.authenticate(
+                    new UsernamePasswordAuthenticationToken(request.getEmail(), request.getPassword()));
+        } catch (Exception e) {
+            throw new UnauthorizedException(MessageError.findErrorById(MessageError.E_401));
+        }
+
         var user = userRepository.findByEmail(request.getEmail())
-                .orElseThrow();
+                .orElseThrow(() -> {
+                    throw new UnauthorizedException(MessageError.findErrorById(MessageError.E_401));
+                });
         var jwtToken = jwtService.generateToken(user);
         var refreshToken = jwtService.generateRefreshToken(user);
         revokeAllUserTokens(user);
